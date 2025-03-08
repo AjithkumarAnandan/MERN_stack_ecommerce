@@ -1,27 +1,38 @@
 "use client";
 import axios from 'axios';
+import { redirect } from 'next/dist/server/api-utils';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 
 const Login: React.FC = () => {
   const [pending, setPending] = useState(false);
-  const [formData, setFormData] = useState<{name:string, password:string}>({
-    name: '',
+  const [formData, setFormData] = useState<{username:string, password:string}>({
+    username: '',
     password: ''
   });
+  const router = useRouter();
+const fetchData = async (value: { username: string; password: string }) => {
+    try {
+        setPending(true); // Set pending to true before making the request
+        
+        const response = await axios.post("/api/auth/login", value, { 
+            headers: { "Content-Type": "application/json" }
+        });
+        if (response?.data?.status === 200) {
+          localStorage.setItem('token',response?.data?.token);
+          router.push('/dashboard');
+        }
+    } catch (error) {
+        console.error("Login failed:", error);
+    } finally {
+        setPending(false); // Ensure it's set to false after request completes
+    }
+};
 
-  const fetchData=async()=>{
-    const sk="hguhjhjhjhjk";
-    setPending(false);
-      const response=await axios.post(`login${sk}`,formData, {headers:{ "Accept":"appliaction/json" }});
-      if(response.status===200){
-        console.log("login successfully")
-      }
-  }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setPending(true);
-    fetchData();
+    await fetchData(formData);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,7 +48,7 @@ const Login: React.FC = () => {
       <h2 className='text-[24px] my-4'>Login Form</h2>
        <div className='flex my-2'>
         <h3 className='mr-8'>Username</h3> 
-        <input name='name' type="text" value={formData.name} onChange={handleChange} className="px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+        <input name='username' type="text" value={formData.username} onChange={handleChange} className="px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"/>
         </div> 
         <div className='flex my-2 ml-1'>
         <h3 className='mr-8'>Password</h3> 

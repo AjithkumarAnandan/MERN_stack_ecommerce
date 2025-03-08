@@ -4,11 +4,13 @@ const NavDetails:React.FC =()=> {
     <nav className="bg-white flex justify-between items-center px-6 py-3 fixed top-6">
       {/* Left Side - Logo */}
       <div className="flex items-center pl-32">
-        <img
+        {/* <img
           src="/efiling_logo.svg" // Replace with your logo path
           alt="Logo"
           className="h-10"
-        />
+        /> */}
+        <h3 className="text-red-400">AK</h3>
+        <h3 className="text-blue-400">Trends</h3>
        </div>
       <div className="px-64"></div>
       {/* Right Side - Menu */}
