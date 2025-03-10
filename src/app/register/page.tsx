@@ -13,20 +13,12 @@ const Register: React.FC = () => {
 
   const fetchData = async (value: { username: string; password: string, cpassword: string })=>{
     setPending(false);
-    const response = await fetch("/api/auth/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(value),
+     const response = await axios.post("/api/auth/register", value,{
+      headers: {"Content-Type": "application/json"}
     });
-    
-    const data = await response.json();
-    console.log(data);
-    
+    console.log(response);
     console.log("user loggin");
-    
-  }
+    }
   
   useEffect(()=>{
       (formData.password===formData.cpassword) ? setIsButton(false) : setIsButton(true)
