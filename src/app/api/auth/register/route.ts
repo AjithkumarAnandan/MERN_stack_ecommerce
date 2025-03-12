@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import dbConnect from "@/lib/dbConnect";
 import User from "@/models/user";
-import crypto from "crypto";
 
 export async function POST(req: Request) {
 try {
@@ -13,10 +12,10 @@ try {
     return NextResponse.json({ message: "Request body is empty" }, { status: 400 });
   }    
 
-  const { username, password }: { username: string; password: string } = body;
+  const { username, password, email, dob}: { username: string; password: string; email:string, dob:Date}= body;
   
   // Check if user already exists
-  let existingUser = await User.findOne({ username });
+  let existingUser = await User.findOne({  $or: [{ username }, { email }] });
   if (existingUser) {
     return NextResponse.json({ message: "User already exists" }, { status: 400 });
   }
@@ -25,10 +24,10 @@ try {
   const saltRounds = 10; 
   const hashedPassword = await bcrypt.hash(password, saltRounds);
   // Create new user with the hashed password
-  const newUser = new User({ username, password: hashedPassword });
+  const newUser = new User({ username, password: hashedPassword, email, dob });
   // Save the new user
   await newUser.save();
-  return NextResponse.json({ message: "User registered successfully" }, { status: 201 });
+  return NextResponse.json({ message: "User registered successfully", status: 201 }, { status: 201 });
 } catch (error) {
   console.error("❌ Registration Error:", error);  
 

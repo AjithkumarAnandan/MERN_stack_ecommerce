@@ -9,10 +9,14 @@ import * as crypto from "crypto";
 export async function POST(req: Request) {
   try {
     await dbConnect(); // Connect to MongoDB
-    const { username, password } = await req.json();
+   const body = await req.json();  
+  if (!body) {
+    return NextResponse.json({ message: "Request body is empty" }, { status: 400 });
+  };    
+  const { username, password }: { username: string; password: string; }= body;
     
     // Check if the user exists
-    const user = await User.findOne({ username });
+    const user = await User.findOne({     $or: [{ username }, { email: username }] });
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }

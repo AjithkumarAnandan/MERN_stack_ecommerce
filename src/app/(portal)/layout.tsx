@@ -27,8 +27,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body >
          <div className="flex flex-col h-screen">
           <div className="fixed top-0">
           <NavDetails/>
@@ -53,8 +51,6 @@ export default function RootLayout({
         {/* <Footer /> */}
       </footer>
     </div>
-      </body>
-    </html>
   );
 }
  

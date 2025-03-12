@@ -4,12 +4,16 @@ import mongoose, { Document, Model, Schema } from "mongoose";
 interface IUser extends Document {
   username: string;
   password: string;
+  email:string;
+  dob:Date;
 }
 
 // Define Schema
 const UserSchema = new Schema<IUser>({
   username: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  dob: { type: Date, required: true }
 });
 
 // Create Model
