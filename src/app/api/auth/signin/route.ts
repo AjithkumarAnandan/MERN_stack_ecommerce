@@ -29,11 +29,11 @@ export async function POST(req: Request) {
     }
 
     // Generate JWT Token
-    const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET!, {
+    const accessToken = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET!, {
       expiresIn: "1h",
     });
 
-    return NextResponse.json({status: 200, message: "Login successful", token }, { status: 200 });
+    return NextResponse.json({status: 200, email: user?.email, accessToken,  message: "Login successful" }, { status: 200 });
   } catch (error: unknown) {
   if (error instanceof Error) {
     return NextResponse.json({ message: "Internal Server Error", error: error?.message }, { status: 500 });

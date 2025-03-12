@@ -1,19 +1,12 @@
 'use client';
-import { signOut, useSession } from "next-auth/react";
-import React, { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import React from "react";
+import UserDropdown from "./UserSignoutDropdown";
 const NavDetails:React.FC =()=> {
     const { data: session } = useSession();
-     const [token, setToken] = useState<string | null>(null);
-
-    useEffect(() => {
-        if (typeof window !== "undefined") {
-            const storedToken = localStorage.getItem("token");
-            setToken(storedToken);
-        }
-    }, []);
 
   return (
-    <nav className="bg-white flex justify-between items-center px-6 py-3 fixed top-6">
+    <nav className="bg-white flex justify-between items-center px-6 py-3 mt-1 fixed top-6 w-full borderborder border-black shadow-lg" >
       {/* Left Side - Logo */}
       <div className="flex items-center pl-32">
         {/* <img
@@ -41,13 +34,9 @@ const NavDetails:React.FC =()=> {
         {/* Buttons */}
         {/* <button className="px-4 py-1 border rounded">Login</button> */}
         <button className="px-4 py-1 bg-blue-600 text-white rounded"><a href="/register">Register</a></button>
-       {token && <div>
-         {session?.user?.image ? (<img src={session.user.image} alt={"No image"} width={40} height={40}/>) : null} 
-          <h2>{session?.user?.email??''}</h2>
-          </div>}
-       {token && <button onClick={() => signOut()}>
-          <p>Logout</p>
-          </button>}
+        <div className="w-24">
+          <UserDropdown session={session}/>
+        </div>
       </div>
     </nav>
   );

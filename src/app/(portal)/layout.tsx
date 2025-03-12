@@ -1,56 +1,37 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import Navbar from "@/Component/Navbar/page";
-import Sidebar from "@/Component/Sidebar/page";
 import Footer from "@/Component/Footer/page";
-import LoginComponent from "./login/page";
-import NavDetails from "@/Component/NavDetails/NavDetails";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-export const metadata: Metadata = {
-  title: "Ajee Foods",
-  description: "Hygineic food essential to our healthy life. You and your family health is our periority!.",
-};
+import Navbar from "@/Component/Navbar/page";
+import NavDetails from "@/Component/NavBarTextBar/NavDetails";
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-         <div className="flex flex-col h-screen">
-          <div className="fixed top-0">
-          <NavDetails/>
-          </div>
+    <div className={`flex flex-col min-h-screen bg-white`}>    
       {/* Navbar */}
-      <header className="bg-gray-800 text-white p-4 fixed top-26 left-0 w-full z-10">
+      <header className="fixed top-0 left-0 w-full z-20 bg-gray-800 text-white">
         <Navbar />
       </header>
-      {/* Main content area with sidebar */}
-      <div className="flex flex-1 pt-16">
-        {/* Sidebar */}
-        {/* <aside className="bg-gray-900 text-white w-64 p-4 h-full fixed left-0 top-16">
+
+      {/* NavDetails */}
+      <div className="fixed  left-0 w-full bg-gray-800 text-white py-4 z-10 ">
+        <NavDetails />
+      </div>
+
+      {/* Main content with Sidebar */}
+      <div className="flex flex-1 pt-32 overflow-hidden">
+        {/* Sidebar (Uncomment if needed) */}
+        {/* <aside className="bg-gray-900 text-white w-64 p-4 sticky top-16 h-screen">
           <Sidebar />
         </aside> */}
-        {/* Main content */}
-        <main className="flex-1 p-6  overflow-auto mt-32">
-          {children}
-        </main>
+
+        {/* Main Content */}
+        <main className="flex-1 p-6 overflow-auto">{children}</main>
       </div>
+
       {/* Footer */}
-      <footer className="bg-gray-800 text-white p-4 text-center fixed bottom-0 left-0 w-full">
-        {/* <Footer /> */}
+      <footer className="bg-gray-800 text-white p-4 text-center mt-auto">
+        <Footer />
       </footer>
     </div>
   );
 }
- 

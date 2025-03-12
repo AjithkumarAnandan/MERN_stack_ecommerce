@@ -43,7 +43,7 @@ const Login: React.FC = () => {
       );
 
       if (response?.data?.status === 200) {
-        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("token", response.data.accessToken);
         router.push("/dashboard");
       }
     } catch (error) {

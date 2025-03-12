@@ -25,7 +25,7 @@ export async function POST(req: Request) {
       const accessToken = jwt.sign({ id: existingUser._id, username: existingUser.username }, process.env.JWT_SECRET,
         { expiresIn: "1h" }
       );
-      return NextResponse.json({ data: true, accessToken, message: "User already exists" }, { status: 200 });
+      return NextResponse.json({ data: true, accessToken, email:existingUser?.email, message: "User already exists" }, { status: 200 });
     } else {
       return NextResponse.json({ data: false, accessToken: null, message: "User does not exist" }, { status: 200 });
     }
