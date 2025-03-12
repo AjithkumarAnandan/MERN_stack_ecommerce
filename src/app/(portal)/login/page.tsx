@@ -17,19 +17,18 @@ const Login: React.FC = () => {
        if (session?.accessToken) {
             signOut({ redirect: false }); // Sign out user if access token exists
             return;
-        }
-        if (typeof window !== "undefined") {
-            const storedToken = localStorage.getItem("token");
-            if (storedToken) {
-                setToken(storedToken);               
-            }
-        }
-          
+        }          
     }, [session]);
 
     
   useEffect(() => {
-    if (token) {
+    const storedToken = localStorage.getItem("token");
+     if (typeof window !== "undefined") {
+            if (storedToken) {
+                setToken(storedToken);               
+            }
+        }
+    if (storedToken) {
       router.replace("/dashboard");
     }
   }, []);
