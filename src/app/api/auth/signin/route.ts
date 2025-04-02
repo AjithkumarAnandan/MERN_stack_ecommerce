@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import dbConnect from "@/lib/dbConnect";
+import dbConnect from "@/utils/dbConnect";
 import User from "@/models/user";
 import * as crypto from "crypto";
 
@@ -30,9 +30,14 @@ export async function POST(req: Request) {
     }
 
     // Generate JWT Token
-    const accessToken = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET!, {
-      expiresIn: "1h",
-    });
+    const accessToken = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET!,  {
+       algorithm: "HS256",
+       expiresIn: "1h",
+          header: {
+            alg: "HS256",
+            typ: "JWT"
+          }
+        });
 
     return NextResponse.json({status: 200, email: user?.email, accessToken,  message: "Login successful" }, { status: 200 });
   } catch (error: unknown) {

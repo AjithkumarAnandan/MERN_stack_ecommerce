@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   reactStrictMode: true, 
    experimental: {
     nextScriptWorkers: false,
+    scrollRestoration: false,
   },
   typescript:{
   ignoreBuildErrors:true,

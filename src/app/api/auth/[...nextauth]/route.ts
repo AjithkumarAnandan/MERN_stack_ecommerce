@@ -1,5 +1,5 @@
 import User from "@/models/user";
-import dbConnect from "@/lib/dbConnect"; // Ensure DB connection
+import dbConnect from "@/utils/dbConnect"; // Ensure DB connection
 import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import jwt from "jsonwebtoken";
@@ -43,11 +43,18 @@ export const authOptions: NextAuthOptions = {
           token.accessToken = jwt.sign(
             { id: existingUser.id, username: existingUser.username },
             process.env.JWT_SECRET!,
-            { expiresIn: "1h" }
+             {  
+          algorithm: "HS256",
+          expiresIn: "1h",
+          header: {
+            alg: "HS256",
+            typ: "JWT"
+          }
+        }
           );
         }
       }
-      return Promise.resolve(token);
+      return token;
     },
 
   async session({ session, token }:{session: any, token:any}) {

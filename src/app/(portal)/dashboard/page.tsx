@@ -3,26 +3,37 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { redirect } from "next/navigation";
 import { Spin } from "antd";
-import { useToken } from "@/lib/useToken";
+import Cookies from "js-cookie";
+import { createStructuredSelector } from "reselect";
+import { getDashboard } from "@/Redux/Selector/dashboard.selector";
+import { bindActionCreators } from "@reduxjs/toolkit";
+import { fetchDashboard } from "@/Redux/ActionThunk/dashboard.action";
+import { connect } from "react-redux";
 
- function Dashboard() {
+ function Dashboard({actions, userData}) {
   const { data: session, status } = useSession();
   const [loading, setLoading] = useState(true); 
+
+  useEffect(()=>{
+    actions.fetchDashboard();
+  },[actions])
+  console.log(userData);
   
     useEffect(() => {
     if (status === "loading") return; // Wait for session to load
     const accessToken = (session as any)?.accessToken;
     if (accessToken) {
-        localStorage.setItem("token", accessToken);
         setLoading(false);
     } else {
-        const token = localStorage.getItem("token");
+        const token =  Cookies.get("next-auth.session-token");
         if (!token) {
             redirect("/login"); // Redirect only if no session and no token
         } 
         setLoading(false);
     }
     }, [session, status]);
+
+
 
 
   if (loading) {
@@ -32,5 +43,11 @@ import { useToken } from "@/lib/useToken";
   return <div>Welcome {(session as any)?.user?.username}</div>;
 }
 
+const mapStateToProps=createStructuredSelector({
+  userData: getDashboard
+});
+const mapDispatchToProps=(dispatch)=>({
+  actions:bindActionCreators({fetchDashboard}, dispatch)
+})
 
-export default Dashboard;
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

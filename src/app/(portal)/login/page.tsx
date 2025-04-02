@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import GoogleButton from "react-google-button";
 import toast from "react-hot-toast";
+import Cookies from "js-cookie";
 
 const Login: React.FC = () => {
   const { data: session, status } = useSession();
@@ -13,26 +14,26 @@ const Login: React.FC = () => {
   const router = useRouter();
   
 useEffect(() => {
-  const token = localStorage.getItem("token");
+  const token = Cookies.get("next-auth.session-token");
   // If the session exists and user is logged in, don't sign out
   if (session && (session as any).accessToken) {
     console.log("User logged in with Google. Access token:", (session as any).accessToken);    
     // If there is an old token stored, remove it (to avoid conflicts)
     if (token) {
-      localStorage.removeItem("token");
+      Cookies.remove("next-auth.session-token");
     }
     return; 
   }
   // If no session exists but there's a token, sign the user out
   if (!session && token) {
-    localStorage.removeItem("token");
+    Cookies.remove("next-auth.session-token");
     signOut({ redirect: false });
   }
 }, [session]);
 
     
   useEffect(() => {
-    const storedToken = localStorage.getItem("token");
+    const storedToken = Cookies.get("next-auth.session-token");
     if (!(typeof window !== "undefined")) {
       if(!storedToken) router.replace("/dashboard");  
       }
@@ -49,7 +50,7 @@ useEffect(() => {
       );
 
       if (response?.data?.status === 200) {
-        localStorage.setItem("token", response.data.accessToken);
+      Cookies.set("next-auth.session-token", response.data.accessToken, { expires: 1/24, secure: true, sameSite: "Strict" });
         router.push("/dashboard");
       }
     } catch (error) {

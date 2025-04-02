@@ -3,13 +3,15 @@ import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import Cookies from "js-cookie";
+
 const UserDropdown = dynamic(() => import("./UserSignoutDropdown"), {ssr: false});
 const NavDetails:React.FC =()=> {
   const { data: session } = useSession();
   const [token, setToken] = useState<string | null>(null);
   const pathname = usePathname();
   useEffect(() => {
-      setToken(localStorage.getItem("token"));   
+      setToken(Cookies.get("next-auth.session-token"));   
   }, [pathname]);
 
   return (

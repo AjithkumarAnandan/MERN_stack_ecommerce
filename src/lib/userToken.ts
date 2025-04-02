@@ -1,12 +1,13 @@
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 
 // Custom Hook for Token Management
-export const useToken = () => {
+export const userToken = () => {
     const [token, setToken] = useState<string | null>(null);
 
     useEffect(() => {
-        const storedToken = localStorage.getItem("token");
+        const storedToken = Cookies.get("next-auth.session-token");
         if (storedToken) {
             try {
                 const tokenParts = storedToken.split(".");
@@ -14,7 +15,7 @@ export const useToken = () => {
                   const expTime = JSON.parse(atob(tokenParts[1])).exp; 
                   const currentTime=Math.floor(Date.now() / 1000);
                  if(currentTime && expTime && currentTime >= expTime){
-                     localStorage.removeItem('token');
+                     Cookies.remove("next-auth.session-token");
                      setToken(null);
                  } else{
                      setToken(storedToken); 
