@@ -10,7 +10,7 @@ const app = express();
 const port = process.env.HOST_ENV ?? "";
 const dbConnect = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI as string);
+    await mongoose.connect(MONGODB_URI);
     if (!MONGODB_URI) {
     throw new Error("❌ MONGO_URI is not defined in environment variables.");
       }
@@ -19,9 +19,9 @@ const dbConnect = async () => {
     console.error("MongoDB connection failed:", (error as Error).message);
     throw new Error("MongoDB connection failed");
   }
-  await mongoose.connect(MONGODB_URI, {
-    dbName: "your_database_name",
-  });
+  // await mongoose.connect(MONGODB_URI, {
+  //   dbName: "your_database_name",
+  // });
 };
 
 

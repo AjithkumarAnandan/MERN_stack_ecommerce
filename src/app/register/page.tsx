@@ -1,5 +1,6 @@
 "use client";
-import GoogleEmailCheck from '@/Component/GoogleEmailChecker/googleEmailChecker';
+
+import { Spin } from 'antd';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -50,6 +51,12 @@ const Register: React.FC = () => {
     }));
   };
 
+  if (status === "loading") {
+            return <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-opacity-50 z-50">
+                        <Spin size="large" />
+                    </div>      
+        }
+
   return (<>
     <button className="flex w-16 p-2 m-4 rounded-lg text-blue-300 border border-blue-400 justify-start items-start transition duration-300 hover:text-white hover:bg-blue-500"><a href="/login">Login</a></button>
     <div className='flex justify-center items-center text-center'>
@@ -84,4 +91,4 @@ const Register: React.FC = () => {
 };
 
 
-export default GoogleEmailCheck(Register)
+export default Register;

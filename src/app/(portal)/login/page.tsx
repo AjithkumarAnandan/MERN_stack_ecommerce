@@ -11,34 +11,40 @@ const Login: React.FC = () => {
   const [pending, setPending] = useState(false);
   const [formData, setFormData] = useState({ username: "", password: "" });
   const router = useRouter();
-   const [token, setToken] = useState<string | null>(null);
-   
-   useEffect(() => {
-       if (session?.accessToken) {
-            signOut({ redirect: false }); // Sign out user if access token exists
-            return;
-        }          
-    }, [session]);
+  
+useEffect(() => {
+  const token = localStorage.getItem("token");
+  // If the session exists and user is logged in, don't sign out
+  if (session && (session as any).accessToken) {
+    console.log("User logged in with Google. Access token:", (session as any).accessToken);    
+    // If there is an old token stored, remove it (to avoid conflicts)
+    if (token) {
+      localStorage.removeItem("token");
+    }
+    return; 
+  }
+  // If no session exists but there's a token, sign the user out
+  if (!session && token) {
+    localStorage.removeItem("token");
+    signOut({ redirect: false });
+  }
+}, [session]);
 
     
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
-     if (typeof window !== "undefined") {
-            if (storedToken) {
-                setToken(storedToken);               
-            }
-        }
-    if (storedToken) {
-      router.replace("/dashboard");
-    }
+    if (!(typeof window !== "undefined")) {
+      if(!storedToken) router.replace("/dashboard");  
+      }
   }, []);
 
   const fetchData = async () => {
     setPending(true);
     try {
+      const payload={...formData,  password: btoa(formData.password)};
       const response = await axios.post(
         "/api/auth/signin",
-        formData,
+        payload,
         { headers: { "Content-Type": "application/json" } }
       );
 
@@ -102,7 +108,7 @@ const Login: React.FC = () => {
         <GoogleButton
           onClick={async () => {
             try {
-              await signIn("google", { redirect: false, callbackUrl:'/register' })
+              await signIn("google", { callbackUrl: "/dashboard" });
             } catch (error) {
               toast.error("Google Sign-In failed");
             }

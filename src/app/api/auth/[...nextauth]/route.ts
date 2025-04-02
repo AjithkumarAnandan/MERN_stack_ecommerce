@@ -1,41 +1,8 @@
-import NextAuth, {
-  NextAuthOptions,
-  DefaultSession,
-  Session,
-  User,
-  Account,
-  Profile,
-} from "next-auth";
-import { JWT } from "next-auth/jwt";
+import User from "@/models/user";
+import dbConnect from "@/lib/dbConnect"; // Ensure DB connection
+import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-
-// Extend the Session interface to include custom properties
-declare module "next-auth" {
-  interface Session extends DefaultSession {
-    user?: {
-      id?: string;
-      name?: string | null;
-      email?: string | null;
-      image?: string | null;
-    };
-    accessToken?: string; // Ensure accessToken exists in Session type
-  }
-}
-
-// Extend the User interface to include the `id` property
-declare module "next-auth" {
-  interface User {
-    id?: string;
-  }
-}
-
-// Extend the JWT interface to ensure accessToken has the correct type
-declare module "next-auth/jwt" {
-  interface JWT {
-    accessToken?: string; // Ensure it's defined as a string | undefined
-  }
-}
-
+import jwt from "jsonwebtoken";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -44,57 +11,61 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
+  
   secret: process.env.NEXTAUTH_SECRET,
+
   callbacks: {
-    async signIn({
-      account,
-      profile,
-    }: {
-      account: Account | null;
-      profile?: Profile;
-    }): Promise<boolean> {
-      // console.log(account, profile, "account, profile");
-      
-      if (!profile?.email) {
-        return false; // Prevent sign-in if email is missing
+    async signIn({ account, profile }) {
+      if (!profile?.email) return false;
+
+      await dbConnect(); // Ensure database connection
+
+      const existingUser = await User.findOne({ email: profile.email });
+
+      if (!existingUser) {
+        return "/register"; // Redirect to register page instead of blocking login
       }
+      
       return true;
     },
-
-    async jwt({
-      token,
-      account,
-      profile,
-    }: {
-      token: JWT;
-      account?: Account | null;
-      profile?: Profile;
-    }): Promise<JWT> {
-      // Store access token in token object and ensure proper typing
-      if (account) {
-        token.accessToken = account.access_token as string | undefined; // ✅ Fixed type error
-      }
+ async jwt({ token, account, profile }) {
       if (profile?.email) {
-        token.email = profile.email;
+        await dbConnect(); // Ensure DB connection
+
+        const existingUser = await User.findOne({ email: profile.email });
+
+        if (existingUser) {
+          token.id = existingUser.id.toString();
+          token.username = existingUser.username;
+          token.email = existingUser.email; // Ensure email is available in session
+
+          // Custom JWT (Optional)
+          token.accessToken = jwt.sign(
+            { id: existingUser.id, username: existingUser.username },
+            process.env.JWT_SECRET!,
+            { expiresIn: "1h" }
+          );
+        }
       }
-      return token;
+      return Promise.resolve(token);
     },
 
-    async session({
-      session,
-      token,
-    }: {
-      session: Session;
-      token: JWT;
-    }): Promise<Session> {
-      // Ensure session has accessToken with correct type
-      session.accessToken = token.accessToken as string | undefined; // ✅ Fixed type error
-      if (session.user) {
-        session.user.email = token.email;
-      }
-      return session;
-    },
+  async session({ session, token }:{session: any, token:any}) {
+    if (token) {
+      session.user = {
+      id: token?.id ?? "",
+      username: token?.username ?? "",
+      email: token?.email ?? "",
+    };
+    session.accessToken = token?.accessToken ?? "";
+    }
+    return session;
   },
+  async redirect({ url, baseUrl }) {
+       // Redirect to a specific page after login
+       return `${baseUrl}/dashboard`; // Change this to the URL you want
+     }
+  }  
 };
 
 const handler = NextAuth(authOptions);

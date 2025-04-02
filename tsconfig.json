@@ -34,7 +34,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-, "src/app/api/auth/route.tx", "src/app/api/auth/[...nextauth]", "src/Component/SessionProviderGoogle/HandleGoogleSignin"  ],
+, "src/app/api/auth/route.tx", "src/app/api/auth/[...nextauth]", "src/Component/SessionProviderGoogle/HandleGoogleSignin", "src/lib/auth.tjs", "src/lib/auth.js"  ],
   "exclude": [
     "node_modules"
   ]

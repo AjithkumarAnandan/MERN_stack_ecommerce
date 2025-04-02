@@ -23,7 +23,8 @@ export async function POST(req: Request) {
     // const sha256Hashed = crypto.createHash("sha256").update(password).digest("hex");
 
      //  Compare SHA-256 hash with the stored password
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+     const normalPassword=atob(password);
+    const isPasswordValid = await bcrypt.compare(normalPassword, user.password);
     if (!isPasswordValid) {
       return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
     }
