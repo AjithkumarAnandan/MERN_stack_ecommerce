@@ -7,7 +7,7 @@ export const userToken = () => {
     const [token, setToken] = useState<string | null>(null);
 
     useEffect(() => {
-        const storedToken = Cookies.get("next-auth.session-token");
+        const storedToken = Cookies.get("token");
         if (storedToken) {
             try {
                 const tokenParts = storedToken.split(".");
@@ -15,7 +15,7 @@ export const userToken = () => {
                   const expTime = JSON.parse(atob(tokenParts[1])).exp; 
                   const currentTime=Math.floor(Date.now() / 1000);
                  if(currentTime && expTime && currentTime >= expTime){
-                     Cookies.remove("next-auth.session-token");
+                     Cookies.remove("token");
                      setToken(null);
                  } else{
                      setToken(storedToken); 

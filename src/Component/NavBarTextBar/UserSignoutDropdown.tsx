@@ -41,7 +41,7 @@ const UserDropdown = ({ session, token }: { session: any; token: string | null }
       <div className="absolute right-0 mt-2 w-48 shadow-lg bg-white rounded-lg z-[9999]">
           <button
             onClick={() => {
-              Cookies.remove("next-auth.session-token");
+              Cookies.remove("token");
               signOut({ callbackUrl: "/" });
             }}
             className="w-full text-left px-4 py-2 text-sm text-blue-700 hover:bg-blue-500 hover:text-white border rounded-lg"

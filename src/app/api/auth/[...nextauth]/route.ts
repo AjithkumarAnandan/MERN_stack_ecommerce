@@ -1,5 +1,5 @@
 import User from "@/models/user";
-import dbConnect from "@/utils/dbConnect"; // Ensure DB connection
+import { dbConnect } from "@/utils/dbConnect"; // Ensure DB connection
 import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import jwt from "jsonwebtoken";

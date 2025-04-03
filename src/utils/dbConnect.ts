@@ -2,12 +2,14 @@ import mongoose from "mongoose";
 const express = require("express");
 import dotenv from "dotenv";
 import cors from "cors";  
+const pool=require("@/utils/postgresql");
 
 const MONGODB_URI = process.env.MONGODB_URI as string;
 
 dotenv.config();
 const app = express();
 const port = process.env.HOST_ENV ?? "";
+
 const dbConnect = async () => {
   try {
     await mongoose.connect(MONGODB_URI);
@@ -19,11 +21,23 @@ const dbConnect = async () => {
     console.error("MongoDB connection failed:", (error as Error).message);
     throw new Error("MongoDB connection failed");
   }
-  // await mongoose.connect(MONGODB_URI, {
-  //   dbName: "your_database_name",
-  // });
 };
 
+const postgresConnect=async()=>{
+  
+  try {
+    // Connect to PostgreSQL
+    if (!pool) {
+      throw new Error("❌ POSTGRES_URI is not defined in environment variables.");
+    }
+    
+    await pool.connect();
+    console.log("✅ PostgreSQL connected successfully");
+  } catch (error) {
+    console.error("❌ PostgreSQL connection failed:", (error as Error).message);
+    throw new Error("PostgreSQL connection failed");
+  }
+}
 
 // CORS middleware configuration
 const corsOptions = {
@@ -33,4 +47,4 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-export default dbConnect;
+export { dbConnect, postgresConnect };

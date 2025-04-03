@@ -1,10 +1,13 @@
-import { configureStore } from "@reduxjs/toolkit";
-import { dashboardSlice } from "../Reducer/dashboard.reducer";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { dashboardPostSlice, dashboardSlice } from "../Reducer/dashboard.reducer";
 
 const store=configureStore({
-    reducer:{
-        dashbaoard:dashboardSlice.reducer
-    }
+    reducer: {
+        dashboard:combineReducers({
+                postDashboard: dashboardPostSlice.reducer,
+                getDashboard: dashboardSlice.reducer,
+        }),
+    }    
 })
 export default store;
 export type RootState = ReturnType<typeof store.getState>

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import dbConnect from "@/utils/dbConnect";
+import { dbConnect } from "@/utils/dbConnect";
 import User from "@/models/user";
 import * as crypto from "crypto";
 

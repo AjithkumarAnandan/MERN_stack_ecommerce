@@ -11,7 +11,7 @@ const NavDetails:React.FC =()=> {
   const [token, setToken] = useState<string | null>(null);
   const pathname = usePathname();
   useEffect(() => {
-      setToken(Cookies.get("next-auth.session-token"));   
+      setToken(Cookies.get("token"));   
   }, [pathname]);
 
   return (

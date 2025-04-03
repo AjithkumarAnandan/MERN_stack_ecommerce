@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
-import dbConnect from "../utils/dbConnect";
+import { dbConnect } from "@/utils/dbConnect";
 import User from "@/models/user";
 
 export const getLoginUser = async (req: Request) => {
