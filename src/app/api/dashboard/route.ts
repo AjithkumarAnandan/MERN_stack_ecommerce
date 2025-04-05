@@ -60,6 +60,7 @@ export async function POST(req: Request) {
 export async function GET(req: Request) {
   try {
     // 🟢 Authenticate User
+        await postgresConnect();
     const { user, error } = await getLoginUser(req);
     if (error) return NextResponse.json({ status: 401, message: "Unauthorized" }, { status: 401 });
 

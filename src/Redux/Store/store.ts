@@ -1,5 +1,6 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { dashboardPostSlice, dashboardSlice } from "../Reducer/dashboard.reducer";
+import { getDocumentDownloadSlice, uploadDocumentSlice } from "../Reducer/document.reducer";
 
 const store=configureStore({
     reducer: {
@@ -7,6 +8,10 @@ const store=configureStore({
                 postDashboard: dashboardPostSlice.reducer,
                 getDashboard: dashboardSlice.reducer,
         }),
+        documentData:combineReducers({
+            uploaded:uploadDocumentSlice.reducer,
+            downloaded:getDocumentDownloadSlice.reducer
+        })
     }    
 })
 export default store;

@@ -1,27 +1,24 @@
-import axios, { AxiosRequestConfig } from "axios";
-import { redirect } from "next/navigation";
-import { userToken } from "./userToken";
+import axios from "axios";
+import Cookies from "js-cookie";
 
-// Dynamic HTTP Class
-export class Http {
-    static async doGet<T>(url: string): Promise<T> {
-        const token = userToken();
-        if (!token) {
-            redirect('/login')
-        }
-        const config: AxiosRequestConfig = {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-        };
+let token: string | null = null;
 
-        try {
-            const response = await axios.get<T>(url, config);
-            return response.data;
-        } catch (error) {
-            console.error("HTTP GET request failed", error);
-            throw error;
-        }
+const config = () => {
+  token = Cookies.get('token');
+  return {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
     }
+  };
+};
+
+export class Http {
+  static async doGet(url: string) {
+    return await axios.get(url, config());
+  }
+
+  static async doPost(url: string, payload: any) {
+    return await axios.post(url, payload, config());
+  }
 }
