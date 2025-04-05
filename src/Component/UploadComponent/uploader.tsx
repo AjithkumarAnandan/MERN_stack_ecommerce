@@ -1,5 +1,4 @@
 'use client';
-import { Http } from '@/lib/Http';
 import { uploadDocument } from '@/Redux/ActionThunk/document.action';
 import { uploadedSelector } from '@/Redux/Selector/document.selector';
 import { bindActionCreators } from '@reduxjs/toolkit';
@@ -9,10 +8,6 @@ import { createStructuredSelector } from 'reselect';
 
 function UploadPDF({actions, uploadPDF }) {
   const [file, setFile] = useState(null);
-
-  console.log("uploadPDF", uploadPDF);
-  
-
 const convertFileToBase64 = (file) => {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -38,7 +33,7 @@ const handleUpload = async () => {
 };
 
   return (
-    <div className="p-6">
+    <div className="p-6 border-2 border-blue-500 w-2/6" >
       <h2 className="text-xl mb-4">Upload PDF</h2>
       <input type="file" accept="application/pdf" onChange={(e:any) => setFile(e.target.files[0])} />
       <button onClick={handleUpload} className="ml-4 px-4 py-2 bg-blue-500 text-white rounded">Upload</button>

@@ -18,4 +18,8 @@ static async doGet(url:any){
 static async doPost(url:any, value:any){
     return await axios.post(url, value, config())
 }
+static async doDelete(url:any){
+    return await axios.delete(url, config())
+}
+
 }

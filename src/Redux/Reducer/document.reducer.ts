@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchDocumentList, uploadDocument } from "../ActionThunk/document.action";
+import { fetchDeleteList, fetchDocumentList, uploadDocument } from "../ActionThunk/document.action";
 
 
 interface initialStateProps{
@@ -54,6 +54,36 @@ export const uploadDocumentSlice=createSlice({
             state.data=action.payload;
             state.loading=false;
         }).addCase(uploadDocument.rejected,(state, action)=>{
+             state.error = typeof action.payload === 'string' ? action.payload : 'An error occurred';
+             state.loading=false;
+        })
+    }
+})
+
+
+
+interface deleteListSliceStateProps{
+    loading:boolean;
+    data:any;
+    error: string | null;
+}
+const deleteListSliceState:deleteListSliceStateProps={
+    loading:false,
+    data:[],
+    error:null,
+}
+export const deleteListSlice=createSlice({
+    name:'Upload/delete',
+    initialState:deleteListSliceState,
+    reducers:{},
+    extraReducers:(builder)=>{
+        builder.addCase(fetchDeleteList.pending,(state)=>{
+            state.loading=true;
+            state.error=null;
+        }).addCase(fetchDeleteList.fulfilled,(state, action)=>{
+            state.data=action.payload;
+            state.loading=false;
+        }).addCase(fetchDeleteList.rejected,(state, action)=>{
              state.error = typeof action.payload === 'string' ? action.payload : 'An error occurred';
              state.loading=false;
         })

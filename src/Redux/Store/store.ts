@@ -1,6 +1,6 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { dashboardPostSlice, dashboardSlice } from "../Reducer/dashboard.reducer";
-import { getDocumentDownloadSlice, uploadDocumentSlice } from "../Reducer/document.reducer";
+import { deleteListSlice, getDocumentDownloadSlice, uploadDocumentSlice } from "../Reducer/document.reducer";
 
 const store=configureStore({
     reducer: {
@@ -9,8 +9,9 @@ const store=configureStore({
                 getDashboard: dashboardSlice.reducer,
         }),
         documentData:combineReducers({
-            uploaded:uploadDocumentSlice.reducer,
-            downloaded:getDocumentDownloadSlice.reducer
+                uploaded:uploadDocumentSlice.reducer,
+                downloaded:getDocumentDownloadSlice.reducer,
+                deleteFile:deleteListSlice.reducer
         })
     }    
 })

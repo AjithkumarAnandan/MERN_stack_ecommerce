@@ -5,10 +5,9 @@ import { postgresConnect } from '@/utils/dbConnect';
 export const config = { api: { bodyParser: false } };
 
 export async function GET(req: NextRequest, { params }: { params: { filename: string } }) {
-
   const { filename } = params;
-
   try {
+    await postgresConnect();
     const result = await pool.query(
       'SELECT * FROM fullstacknextjs.upload WHERE "filename" = $1',
       [filename]

@@ -12,11 +12,11 @@ import { connect } from "react-redux";
 import { AppDispatch } from "@/Redux/Store/store";
 import UploadPDF from "@/Component/UploadComponent/uploader";
 import DownloadPDF from "@/Component/UploadComponent/downloader";
-import { fetchDocumentList } from "@/Redux/ActionThunk/document.action";
-import { imageListSelector } from "@/Redux/Selector/document.selector";
+import { fetchDeleteList, fetchDocumentList } from "@/Redux/ActionThunk/document.action";
+import { imageListSelector, uploadImageListLoading } from "@/Redux/Selector/document.selector";
 
 
- function Dashboard({actions, userData, imageList}) {
+ function Dashboard({actions, userData, imageList, imageListoading}) {
   const { data: session, status } = useSession();
   const [loading, setLoading] = useState(true); 
   const [data, setData] = useState<any>([]); 
@@ -59,6 +59,10 @@ import { imageListSelector } from "@/Redux/Selector/document.selector";
     return <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-opacity-50 z-50"><Spin size="large" /></div>  
   }
 
+  const handleDelete=(filename)=>{
+    actions.fetchDeleteList(filename);
+  }
+
   return <>
   
   <h2 className="flex items-center justify-center font-bold">Welcome</h2> 
@@ -74,16 +78,17 @@ import { imageListSelector } from "@/Redux/Selector/document.selector";
         </div>
     </div>
   })}
-   
-  <UploadPDF/>
-
-  <div>
+     <UploadPDF/>
+ <div>
   </div>
   <p>List </p>
 
 <ol style={{ listStyleType: 'decimal', paddingLeft: '20px' }}>
-  {Array.isArray(imageListData) && imageListData.map((item, i) => (
-    <li key={i} style={{padding:"5px"}}> <DownloadPDF fileName={`${item}`}/></li>
+  {!imageListoading && Array.isArray(imageListData) && imageListData.map((item, i) => (
+   <li key={i} style={{ padding: "5px", gap: "10px", position:'relative' }} >
+  <DownloadPDF fileName={item} />
+  <span onClick={() => handleDelete(item)} style={{   cursor: "pointer",color: "white", background: "none", border: "none", fontSize: "14px", marginLeft:"-14px", marginTop:"-4px", position:"absolute", backgroundColor:"red",  padding:'0 6px',  borderRadius:"20px" }}  aria-label="Delete" >X </span>
+</li>
   ))}
 </ol>
   </>;
@@ -91,10 +96,11 @@ import { imageListSelector } from "@/Redux/Selector/document.selector";
 
 const mapStateToProps=createStructuredSelector({
   userData: getDashboard,
-  imageList:imageListSelector
+  imageList:imageListSelector,
+  imageListoading:uploadImageListLoading
 });
 const mapDispatchToProps=(dispatch:AppDispatch)=>({
-  actions:bindActionCreators({fetchDashboard, fetchDocumentList}, dispatch)
+  actions:bindActionCreators({fetchDashboard, fetchDocumentList, fetchDeleteList}, dispatch)
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
